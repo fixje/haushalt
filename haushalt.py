@@ -74,31 +74,23 @@ def main(filename):
     print "\t", "\t".join(bal.keys())
     print "\t", "========" * len(bal.keys())
     print "\t", "\t".join(["%.2f" % i for i in bal.values()])
+
+    assert sum([b for b in bal.values()]) == 0
     print
     print "Ausgleichszahlungen"
-    while len([b for b in bal.values() if b < 0]) > 0:
-        pos = []
-        neg = []
-        for k in bal.keys():
-            if bal[k] < 0:
-                neg.append(k)
-            elif bal[k] > 0:
-                pos.append(k)
-        pos = sorted(pos)
-        neg = sorted(neg, reverse=True)
-        if len(neg) > 0 and len(pos) < 1:
-            raise Exception("Es gibt jemanden mit Schulden, aber niemanden mit Guthaben")
-        while len(neg) > 0:
-            k = neg.pop()
-            while bal[k] < 0 and len(pos) > 0:
-                r = pos.pop()
-                if abs(bal[k]) >= abs(bal[r]):
-                    v = abs(bal[r])
-                elif abs(bal[k]) < abs(bal[r]):
-                    v = abs(bal[k])
-                print "\t%s an %s:\t€ %.2f" % (k, r, v)
-                bal[k] += v
-                bal[r] -= v
+    pos = [k for k, v in bal.items() if v > 0]
+    neg = [k for k, v in bal.items() if v < 0]
+    for n in neg:
+        while bal[n] < 0:
+            p = pos.pop()
+            if abs(bal[n]) >= abs(bal[p]):
+                v = abs(bal[p])
+            elif abs(bal[n]) < abs(bal[p]):
+                v = abs(bal[n])
+                pos.append(p)
+            print "\t%s an %s:\t€ %.2f" % (n, p, v)
+            bal[n] += v
+            bal[p] -= v
 
 
 def test():
