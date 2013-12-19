@@ -73,9 +73,9 @@ def main(filename):
     print "Saldo"
     print "\t", "\t".join(bal.keys())
     print "\t", "========" * len(bal.keys())
-    print "\t", "\t".join([ "%.2f" % i for i in bal.values()])
+    print "\t", "\t".join(["%.2f" % i for i in bal.values()])
     print
-    print "Ausgleichszahlungen (Vorschlag)"
+    print "Ausgleichszahlungen"
     while len([b for b in bal.values() if b < 0]) > 0:
         pos = []
         neg = []
@@ -84,11 +84,18 @@ def main(filename):
                 neg.append(k)
             elif bal[k] > 0:
                 pos.append(k)
-            else:
-                print "\t%s hat einen ausgeglichenen Saldo" % k
-        for k in neg:                       # negative Saldos werden zu gleich-
-            v = -bal[k] / float(len(pos))   # en Teilen an alle mit positivem
-            for r in pos:                   # Saldo zurückgezahlt
+        pos = sorted(pos)
+        neg = sorted(neg, reverse=True)
+        if len(neg) > 0 and len(pos) < 1:
+            raise Exception("Es gibt jemanden mit Schulden, aber niemanden mit Guthaben")
+        while len(neg) > 0:
+            k = neg.pop()
+            while bal[k] < 0 and len(pos) > 0:
+                r = pos.pop()
+                if abs(bal[k]) >= abs(bal[r]):
+                    v = abs(bal[r])
+                elif abs(bal[k]) < abs(bal[r]):
+                    v = abs(bal[k])
                 print "\t%s an %s:\t€ %.2f" % (k, r, v)
                 bal[k] += v
                 bal[r] -= v
