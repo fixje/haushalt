@@ -83,10 +83,10 @@ def main(filename):
     for n in neg:
         while bal[n] < 0:
             p = pos.pop()
-            if abs(bal[n]) >= abs(bal[p]):
-                v = abs(bal[p])
-            elif abs(bal[n]) < abs(bal[p]):
-                v = abs(bal[n])
+            if -bal[n] >= bal[p]:
+                v = bal[p]
+            elif -bal[n] < bal[p]:
+                v = -bal[n]
                 pos.append(p)
             print "\t%s an %s:\t€ %.2f" % (n, p, v)
             bal[n] += v
