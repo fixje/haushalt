@@ -60,8 +60,8 @@ def balance(rows):
                 balance[c] -= v / len(w)    # vom Konto jedes Begünstigten wird
             i += 1                          # der gleiche Teil abgezogen
         except:
-            print "Error in line %d" % i
-            print sys.exc_info()
+            print >> sys.stderr, "Error in line %d: %s" % (i, row)
+            print >> sys.stderr,  sys.exc_info()[1]
             sys.exit(1)
     return balance
 
