@@ -78,13 +78,16 @@ def main(filename):
     print "\t", "\t".join(paid.keys())
     print "\t", "========" * len(paid.keys())
     print "\t", "\t".join(["%.2f" % i for i in paid.values()])
+    print
+    print "Ausgaben insgesamt: %.2f" % sum(paid.values())
+    print
 
     print "Saldo"
     print "\t", "\t".join(bal.keys())
     print "\t", "========" * len(bal.keys())
     print "\t", "\t".join(["%.2f" % i for i in bal.values()])
 
-    assert sum([b for b in bal.values()]) == 0
+    assert sum([b for b in bal.values()]) < 0.01  # Gleikommaschiss
     print
     print "Ausgleichszahlungen"
     pos = [k for k, v in bal.items() if v > 0]
