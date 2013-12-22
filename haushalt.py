@@ -57,7 +57,8 @@ def balance(rows):
             if not p in whopaid:
                 whopaid[p] = 0.0
             balance[p] += v                 # p hat gezahlt und bekommt
-            whopaid[p] += v
+            if v > 0:
+                whopaid[p] += v
             for c in w:                     # eine Gutschrift
                 if not c in balance:
                     balance[c] = 0.0
