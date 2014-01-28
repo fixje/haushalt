@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Skript zur Haushaltsabrechnung
@@ -35,6 +35,8 @@
 # keinen Sinn: K, 2, K würde auf Ks Konto 2 addieren und gleich wieder abziehen
 #
 
+from __future__ import print_function
+
 import csv
 import sys
 
@@ -65,8 +67,8 @@ def balance(rows):
                 balance[c] -= v / len(w)    # vom Konto jedes Begünstigten wird
             i += 1                          # der gleiche Teil abgezogen
         except:
-            print >> sys.stderr, "Error in line %d: %s" % (i, row)
-            print >> sys.stderr,  sys.exc_info()[1]
+            print("Error in line %d: %s" % (i, row), file=sys.stderr)
+            print(sys.exc_info()[1], file=sys.stderr)
             sys.exit(1)
     return (balance, whopaid)
 
@@ -75,24 +77,24 @@ def main(filename):
     with open(filename, 'r') as f:
         reader = csv.reader(f)
         bal, paid = balance(reader)
-    print "Wer hat wie viel vorgelegt?"
-    print "\t", "\t".join(paid.keys())
-    print "\t", "========" * len(paid.keys())
-    print "\t", "\t".join(["%.2f" % i for i in paid.values()])
-    print
-    print "Ausgaben insgesamt: %.2f" % sum(paid.values())
-    print
+    print("Wer hat wie viel vorgelegt?")
+    print("\t", "\t".join(list(paid.keys())))
+    print("\t", "========" * len(list(paid.keys())))
+    print("\t", "\t".join(["%.2f" % i for i in list(paid.values())]))
+    print()
+    print("Ausgaben insgesamt: %.2f" % sum(paid.values()))
+    print()
 
-    print "Saldo"
-    print "\t", "\t".join(bal.keys())
-    print "\t", "========" * len(bal.keys())
-    print "\t", "\t".join(["%.2f" % i for i in bal.values()])
+    print("Saldo")
+    print("\t", "\t".join(list(bal.keys())))
+    print("\t", "========" * len(list(bal.keys())))
+    print("\t", "\t".join(["%.2f" % i for i in list(bal.values())]))
 
-    assert sum([b for b in bal.values()]) < 0.01  # Gleikommaschiss
-    print
-    print "Ausgleichszahlungen"
-    pos = [k for k, v in bal.items() if v > 0]
-    neg = [k for k, v in bal.items() if v < 0]
+    assert sum([b for b in list(bal.values())]) < 0.01  # Gleikommaschiss
+    print()
+    print("Ausgleichszahlungen")
+    pos = [k for k, v in list(bal.items()) if v > 0]
+    neg = [k for k, v in list(bal.items()) if v < 0]
     for n in neg:
         while bal[n] < 0:
             p = pos.pop()
@@ -101,7 +103,7 @@ def main(filename):
             elif -bal[n] < bal[p]:
                 v = -bal[n]
                 pos.append(p)
-            print "\t%s an %s:\t€ %.2f" % (n, p, v)
+            print("\t%s an %s:\t€ %.2f" % (n, p, v))
             bal[n] += v
             bal[p] -= v
 
@@ -130,5 +132,5 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         main(sys.argv[1])
     else:
-        print "Running Tests"
+        print("Running Tests")
         test()
