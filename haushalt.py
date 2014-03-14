@@ -96,7 +96,7 @@ def main(filename):
     pos = [k for k, v in list(bal.items()) if v > 0]
     neg = [k for k, v in list(bal.items()) if v < 0]
     for n in neg:
-        while bal[n] < 0:
+        while bal[n] < -0.00001:
             p = pos.pop()
             if -bal[n] >= bal[p]:
                 v = bal[p]
