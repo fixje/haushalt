@@ -11,6 +11,8 @@
 #
 # p: einzelnes Personenkürzel bestehend aus genau einem Zeichen
 # w: String bestehend aus Personenkürzeln
+# Zeilen, die mit einem Rautezeichen (#) beginnen, werden zwecks Kommentar-
+# funktion ignoriert.
 #
 # Beispiel:
 #   D, 20.00, MK
@@ -75,7 +77,7 @@ def balance(rows):
 
 def main(filename):
     with open(filename, 'r') as f:
-        reader = csv.reader(f)
+        reader = csv.reader(row for row in f if not row.startswith('#'))
         bal, paid = balance(reader)
     print("Wer hat wie viel vorgelegt?")
     print("\t", "\t".join(list(paid.keys())))
