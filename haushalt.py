@@ -53,6 +53,13 @@ def balance(rows):
     i = 1
     for row in rows:
         try:
+            if row == None:                 # Kommentare ignorieren, aber Zeile
+                i += 1                      # zaehlen
+                continue
+            if row[0] == "":                # Leerzeilen ignorieren
+                i += 1
+                continue
+
             p = row[0].upper().replace(" ", "")
             v = float(eval(row[1].replace(" ", "")))
             w = row[2].upper().replace(" ", "")
@@ -77,8 +84,16 @@ def balance(rows):
 
 def main(filename):
     with open(filename, 'r') as f:
-        reader = csv.reader(row for row in f if not row.startswith('#'))
-        bal, paid = balance(reader)
+        lines = []
+        for r in f:
+            if r.startswith("#"):
+                lines.append(None)  # None fuer Kommentare
+                continue
+            s = r.split(",")
+            lines.append(tuple((c.replace(" ", "").replace("\t", "").\
+                                replace("\n", "").replace("\r", "")
+                                for c in s)))
+        bal, paid = balance(lines)
     print("Wer hat wie viel vorgelegt?")
     print("\t", "\t".join(list(paid.keys())))
     print("\t", "========" * len(list(paid.keys())))
